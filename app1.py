@@ -69,7 +69,6 @@ if uploaded_files:
             key=file.name
         )
 
-        # Correct indentation for 'if' statement
         if st.button(f"Convert {file.name}"):
             buffer = BytesIO()
 
@@ -85,7 +84,7 @@ if uploaded_files:
 
             buffer.seek(0)
 
-            # ✅ FIXED INDENTATION HERE
+            # ✅ Fixed Indentation
             st.download_button(
                 label=f"⬇ Download {file_name}",
                 data=buffer,
@@ -93,6 +92,5 @@ if uploaded_files:
                 mime=mime_type
             )
 
-    # ✅ Move this line outside the loop (correct indentation)
+    # ✅ Moved this outside the loop to avoid repetition
     st.success("🎉 All files processed!")
- 
