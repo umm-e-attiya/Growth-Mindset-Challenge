@@ -3,35 +3,34 @@ import pandas as pd
 import os
 from io import BytesIO
 
-#setup up our App
-
-st.set_page_config(page_title="💿 Data sweeper" , layout = 'wide')
+# Setup our App
+st.set_page_config(page_title="💿 Data sweeper", layout="wide")
 st.title("💿 Data sweeper")
-st.write("Tranform your files between CSV and Excel formats with built-in data cleaning and visualization!")
+st.write("Transform your files between CSV and Excel formats with built-in data cleaning and visualization!")
 
-uploaded_files = st.file_uploader("Upload your files (CSV or Excel):", type=["csv","xlsx"], accept_multiple_files=True)
+uploaded_files = st.file_uploader("Upload your files (CSV or Excel):", type=["csv", "xlsx"], accept_multiple_files=True)
 
 if uploaded_files:
     for file in uploaded_files:
-        file_ext = os.path.splitext(file.name)[-1].lower()  
-        
+        file_ext = os.path.splitext(file.name)[-1].lower()
+
         if file_ext == ".csv":
             df = pd.read_csv(file)
-        elif file_ext == ".xlsx":  
+        elif file_ext == ".xlsx":
             df = pd.read_excel(file)
         else:
             st.error(f"Unsupported file type: {file_ext}")
-            continue  
+            continue
 
         # Display info about the file
         st.write(f"**File Name:** {file.name}")
-        st.write(f"**File Size:** {file.size / 1024} KB")
+        st.write(f"**File Size:** {file.size / 1024:.2f} KB")
 
-        # Show 5 rows of our df
+        # Show preview of the dataframe
         st.write("🔍 Preview the Head of the Dataframe")
         st.dataframe(df.head())
 
-        # Option for data cleaning
+        # Data Cleaning Options
         st.subheader("🛠 Data Cleaning Options")
         if st.checkbox(f"Clean Data for {file.name}"):
             col1, col2 = st.columns(2)
@@ -40,7 +39,7 @@ if uploaded_files:
                 if st.button(f"Remove Duplicates from {file.name}"):
                     df.drop_duplicates(inplace=True)
                     st.write("Duplicates Removed!")
-            
+
             with col2:
                 if st.button(f"Fill Missing Values for {file.name}"):
                     numeric_cols = df.select_dtypes(include=['number']).columns
@@ -75,7 +74,7 @@ if uploaded_files:
             buffer = BytesIO()
 
             if conversion_type == "CSV":
-                df.to_csv(buffer, index=False)  # Fixed 'pdf' to 'df'
+                df.to_csv(buffer, index=False)
                 file_name = file.name.replace(file_ext, ".csv")
                 mime_type = "text/csv"
 
@@ -86,12 +85,14 @@ if uploaded_files:
 
             buffer.seek(0)
 
-            # Download Button
+            # ✅ FIXED INDENTATION HERE
             st.download_button(
-                label=f"⬇ Download {file.name} as {conversion_type}",
+                label=f"⬇ Download {file_name}",
                 data=buffer,
-                filename=file_name,
+                file_name=file_name,
                 mime=mime_type
             )
 
-st.success("🎉 All files processed!")  
+    # ✅ Move this line outside the loop (correct indentation)
+    st.success("🎉 All files processed!")
+ 
